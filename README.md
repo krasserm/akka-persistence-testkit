@@ -68,4 +68,4 @@ Examples
 
 - [`LeveldbJournalNativeSpec`](https://github.com/krasserm/akka-persistence-testkit/blob/master/src/test/scala/akka/persistence/journal/leveldb/LeveldbJournalNativeSpec.scala) (this project)
 - [`LeveldbJournalJavaSpec`](https://github.com/krasserm/akka-persistence-testkit/blob/master/src/test/scala/akka/persistence/journal/leveldb/LeveldbJournalJavaSpec.scala) (this project)
-- [`CassandraJournalSpec`]((https://github.com/krasserm/akka-persistence-cassandra/blob/master/src/test/scala/akka/persistence/journal/cassandra/CassandraJournalSpec.scala)) (akka-persistence-cassandra)
+- [`CassandraJournalSpec`](https://github.com/krasserm/akka-persistence-cassandra/blob/master/src/test/scala/akka/persistence/journal/cassandra/CassandraJournalSpec.scala) (akka-persistence-cassandra)
