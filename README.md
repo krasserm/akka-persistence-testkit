@@ -18,7 +18,7 @@ To include the testkit into your `sbt` project, add the following lines to `buil
 
     resolvers += "krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"
 
-    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.1"
+    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.1" % "test"
 
 This version of the plugin depends on Akka 2.3.0-RC4 and Scala 2.10.3.
 
@@ -66,4 +66,6 @@ Under `sbt`, the tests inherited from `JournalSpec` can be executed with
 Examples
 --------
 
-See `LeveldbJournal*Spec` in `src/test/scala`.
+- [`LeveldbJournalNativeSpec`](https://github.com/krasserm/akka-persistence-testkit/blob/master/src/test/scala/akka/persistence/journal/leveldb/LeveldbJournalNativeSpec.scala) (this project)
+- [`LeveldbJournalJavaSpec`](https://github.com/krasserm/akka-persistence-testkit/blob/master/src/test/scala/akka/persistence/journal/leveldb/LeveldbJournalJavaSpec.scala) (this project)
+- [`CassandraJournalSpec`]((https://github.com/krasserm/akka-persistence-cassandra/blob/master/src/test/scala/akka/persistence/journal/cassandra/CassandraJournalSpec.scala)) (akka-persistence-cassandra)
