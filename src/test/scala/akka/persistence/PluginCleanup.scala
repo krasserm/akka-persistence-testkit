@@ -1,12 +1,10 @@
-package akka.persistence.journal.leveldb
+package akka.persistence
 
 import java.io.File
 
 import org.apache.commons.io.FileUtils
 
-import akka.persistence.journal.JournalSpec
-
-trait LeveldbJournalCleanup extends JournalSpec {
+trait PluginCleanup extends PluginSpec {
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.snapshot-store.local.dir").map(s ⇒ new File(system.settings.config.getString(s)))

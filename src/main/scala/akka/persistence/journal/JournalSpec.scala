@@ -1,9 +1,6 @@
 package akka.persistence.journal
 
-import java.util.concurrent.atomic.AtomicInteger
-
 import scala.collection.immutable.Seq
-import scala.reflect.ClassTag
 
 import akka.actor._
 import akka.persistence._
@@ -11,8 +8,6 @@ import akka.persistence.JournalProtocol._
 import akka.testkit._
 
 import com.typesafe.config._
-
-import org.scalatest._
 
 object JournalSpec {
   val config = ConfigFactory.parseString(
@@ -24,39 +19,26 @@ object JournalSpec {
   case class Confirmation(processorId: String, channelId: String, sequenceNr: Long) extends PersistentConfirmation
 }
 
-trait JournalSpec extends TestKitBase with WordSpecLike with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
+trait JournalSpec extends PluginSpec {
   import JournalSpec.Confirmation
 
   implicit lazy val system = ActorSystem("JournalSpec", config.withFallback(JournalSpec.config))
-  private var _extension: Persistence = _
-
-  private val counter = new AtomicInteger(0)
-  private var pid: String = _
 
   private var senderProbe: TestProbe = _
   private var receiverProbe: TestProbe = _
 
-  override protected def beforeAll(): Unit =
-    _extension = Persistence(system)
-
-  override protected def afterAll(): Unit =
-    shutdown(system)
-
   override protected def beforeEach(): Unit = {
+    super.beforeEach()
     senderProbe = TestProbe()
     receiverProbe = TestProbe()
-
-    pid = s"p-${counter.incrementAndGet()}"
     writeMessages(1, 5, pid, senderProbe.ref)
   }
 
-  val config: Config
-
-  def extension: Persistence =
-    _extension
-
   def journal: ActorRef =
-    _extension.journalFor(null)
+    extension.journalFor(null)
+
+  def replayedMessage(snr: Long, deleted: Boolean = false, confirms: Seq[String] = Nil): ReplayedMessage =
+    ReplayedMessage(PersistentImpl(s"a-${snr}", snr, pid, deleted, confirms, senderProbe.ref))
 
   def writeMessages(from: Int, to: Int, pid: String, sender: ActorRef): Unit = {
     val msgs = from to to map { i => PersistentRepr(payload = s"a-${i}", sequenceNr = i, processorId = pid, sender = sender) }
@@ -69,12 +51,6 @@ trait JournalSpec extends TestKitBase with WordSpecLike with Matchers with Befor
       probe.expectMsgPF() { case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`)) => payload should be (s"a-${i}") }
     }
   }
-
-  def replayedMessage(snr: Long, deleted: Boolean = false, confirms: Seq[String] = Nil): ReplayedMessage =
-    ReplayedMessage(PersistentImpl(s"a-${snr}", snr, pid, deleted, confirms, senderProbe.ref))
-
-  def subscribe[T : ClassTag](subscriber: ActorRef) =
-    system.eventStream.subscribe(subscriber, implicitly[ClassTag[T]].runtimeClass)
 
   "A journal" must {
     "replay all messages" in {
