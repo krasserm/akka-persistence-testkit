@@ -1,7 +1,7 @@
 Akka Persistence Plugin Testkit
 ===============================
 
-A compatibility testkit for Akka Persistence [storage plugins](http://doc.akka.io/docs/akka/2.3.0/scala/persistence.html#storage-plugins).
+A compatibility testkit for Akka Persistence [storage plugins](http://doc.akka.io/docs/akka/2.3.2/scala/persistence.html#storage-plugins).
 
 Installation
 ------------
@@ -12,9 +12,9 @@ To include the testkit into your `sbt` project, add the following lines to `buil
 
     resolvers += "krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"
 
-    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.3" % "test"
+    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.3.1" % "test"
 
-This version of the plugin depends on Akka 2.3.0 and Scala 2.10.3.
+This version of the plugin depends on Akka 2.3.2 and is cross-built against Scala 2.10.4 and 2.11.0.
 
 Implementation
 --------------
