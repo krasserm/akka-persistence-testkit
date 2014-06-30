@@ -16,7 +16,7 @@ object JournalSpec {
       |akka.persistence.publish-plugin-commands = on
     """.stripMargin)
 
-  case class Confirmation(processorId: String, channelId: String, sequenceNr: Long) extends PersistentConfirmation
+  case class Confirmation(persistenceId: String, channelId: String, sequenceNr: Long) extends PersistentConfirmation
 }
 
 trait JournalSpec extends PluginSpec {
@@ -41,14 +41,14 @@ trait JournalSpec extends PluginSpec {
     ReplayedMessage(PersistentImpl(s"a-${snr}", snr, pid, deleted, confirms, senderProbe.ref))
 
   def writeMessages(from: Int, to: Int, pid: String, sender: ActorRef): Unit = {
-    val msgs = from to to map { i => PersistentRepr(payload = s"a-${i}", sequenceNr = i, processorId = pid, sender = sender) }
+    val msgs = from to to map { i => PersistentRepr(payload = s"a-${i}", sequenceNr = i, persistenceId = pid, sender = sender) }
     val probe = TestProbe()
 
-    journal ! WriteMessages(msgs, probe.ref)
+    journal ! WriteMessages(msgs, probe.ref, 1)
 
-    probe.expectMsg(WriteMessagesSuccess)
+    probe.expectMsg(WriteMessagesSuccessful)
     from to to foreach { i =>
-      probe.expectMsgPF() { case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`)) => payload should be (s"a-${i}") }
+      probe.expectMsgPF() { case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`), 1) => payload should be (s"a-${i}") }
     }
   }
 

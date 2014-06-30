@@ -12,9 +12,9 @@ fork := true
 
 parallelExecution in Test := false
 
-libraryDependencies += "com.typesafe.akka" %% "akka-persistence-experimental" % "2.3.2" % "compile"
+libraryDependencies += "com.typesafe.akka" %% "akka-persistence-experimental" % "2.3.4" % "compile"
 
-libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.3.2" % "compile"
+libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "compile"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.4" % "compile"
 
