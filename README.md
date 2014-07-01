@@ -12,9 +12,9 @@ To include the testkit into your `sbt` project, add the following lines to `buil
 
     resolvers += "krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"
 
-    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.3.2" % "test"
+    libraryDependencies += "com.github.krasserm" %% "akka-persistence-testkit" % "0.3.3" % "test"
 
-This version of the plugin depends on Akka 2.3.4 and is cross-built against Scala 2.10.4 and 2.11.0.
+This version of the plugin depends on Akka 2.3.3 and is cross-built against Scala 2.10.4 and 2.11.0.
 
 Implementation
 --------------
@@ -51,6 +51,37 @@ class MyJournalSpec extends JournalSpec {
 ```
 
 The plugin `config` must be defined as `lazy val`. It will be loaded by `JournalSpec` during initialization. Plugin initialization and shutdown can be customized by overriding `beforeAll()` and `afterAll()` (optional).
+
+### Journal plugins tests for deprecated plugin API
+
+`JournalSpec` only tests those part of the journal plugin API that are not deprecated in Akka 2.3.4. If you want to test the deprecated plugin API as well you should extend `LegacyJournalSpec` instead. This additionally tests your journal plugin for compatibility with Akka versions < 2.3.4 (incl. handling of channel confirmations and individual message deletions):
+
+```scala
+package org.example
+
+import com.typesafe.config.ConfigFactory
+import akka.persistence.journal.LegacyJournalSpec
+
+class MyLegacyJournalSpec extends LegacyJournalSpec {
+  lazy val config = ConfigFactory.parseString("...")
+
+  override def beforeAll() {
+    // before plugin initialization
+    // ...
+
+    // plugin initialization
+    super.beforeAll()
+  }
+
+  override def afterAll() {
+    // plugin shutdown
+    super.afterAll()
+
+    // after plugin shutdown
+    // ...
+  }
+}
+```
 
 ### Snapshot store plugin tests
 
