@@ -104,8 +104,8 @@ trait JournalSpec extends PluginSpec {
       val cmd = DeleteMessagesTo(pid, 3, true)
       val sub = TestProbe()
 
-      journal ! cmd
       subscribe[DeleteMessagesTo](sub.ref)
+      journal ! cmd
       sub.expectMsg(cmd)
 
       journal ! ReplayMessages(1, Long.MaxValue, Long.MaxValue, pid, receiverProbe.ref)
@@ -115,8 +115,8 @@ trait JournalSpec extends PluginSpec {
       val cmd = DeleteMessagesTo(pid, 3, false)
       val sub = TestProbe()
 
-      journal ! cmd
       subscribe[DeleteMessagesTo](sub.ref)
+      journal ! cmd
       sub.expectMsg(cmd)
 
       journal ! ReplayMessages(1, Long.MaxValue, Long.MaxValue, pid, receiverProbe.ref, replayDeleted = true)
