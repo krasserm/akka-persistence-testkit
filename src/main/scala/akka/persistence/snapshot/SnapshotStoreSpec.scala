@@ -72,8 +72,8 @@ trait SnapshotStoreSpec extends PluginSpec {
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 
-      snapshotStore ! cmd
       subscribe[DeleteSnapshot](sub.ref)
+      snapshotStore ! cmd
       sub.expectMsg(cmd)
 
       snapshotStore.tell(LoadSnapshot(pid, SnapshotSelectionCriteria(md.sequenceNr, md.timestamp), Long.MaxValue), senderProbe.ref)
@@ -84,8 +84,8 @@ trait SnapshotStoreSpec extends PluginSpec {
       val cmd = DeleteSnapshots(pid, SnapshotSelectionCriteria(md.sequenceNr, md.timestamp))
       val sub = TestProbe()
 
-      snapshotStore ! cmd
       subscribe[DeleteSnapshots](sub.ref)
+      snapshotStore ! cmd
       sub.expectMsg(cmd)
 
       snapshotStore.tell(LoadSnapshot(pid, SnapshotSelectionCriteria(md.sequenceNr, md.timestamp), Long.MaxValue), senderProbe.ref)

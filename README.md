@@ -54,7 +54,7 @@ The plugin `config` must be defined as `lazy val`. It will be loaded by `Journal
 
 ### Journal plugins tests for deprecated plugin API
 
-`JournalSpec` only tests those part of the journal plugin API that are not deprecated in Akka 2.3.4. If you want to test the deprecated plugin API as well you should extend `LegacyJournalSpec` instead. This additionally tests your journal plugin for compatibility with Akka versions < 2.3.4 (incl. handling of channel confirmations and individual message deletions):
+`JournalSpec` only tests those part of the journal plugin API that are not deprecated in Akka 2.3.4. If you want to test the deprecated plugin API as well you should extend `LegacyJournalSpec` instead. This additionally tests your journal plugin to properly support channels and individual message deletions:
 
 ```scala
 package org.example
