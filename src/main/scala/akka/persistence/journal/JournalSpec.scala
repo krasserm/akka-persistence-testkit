@@ -36,18 +36,20 @@ trait JournalSpec extends PluginSpec {
   def journal: ActorRef =
     extension.journalFor(null)
 
+  def messagePayload(snr: Long): Any = s"a-$snr"
+  
   def replayedMessage(snr: Long, deleted: Boolean = false, confirms: Seq[String] = Nil): ReplayedMessage =
-    ReplayedMessage(PersistentImpl(s"a-${snr}", snr, pid, deleted, confirms, senderProbe.ref))
+    ReplayedMessage(PersistentImpl(messagePayload(snr), snr, pid, deleted, confirms, senderProbe.ref))
 
   def writeMessages(from: Int, to: Int, pid: String, sender: ActorRef): Unit = {
-    val msgs = from to to map { i => PersistentRepr(payload = s"a-${i}", sequenceNr = i, persistenceId = pid, sender = sender) }
+    val msgs = from to to map { i => PersistentRepr(payload = messagePayload(i), sequenceNr = i, persistenceId = pid, sender = sender) }
     val probe = TestProbe()
 
     journal ! WriteMessages(msgs, probe.ref, 1)
 
     probe.expectMsg(WriteMessagesSuccessful)
     from to to foreach { i =>
-      probe.expectMsgPF() { case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`), 1) => payload should be (s"a-${i}") }
+      probe.expectMsgPF() { case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`), 1) => payload should equal (messagePayload(i)) }
     }
   }
 
